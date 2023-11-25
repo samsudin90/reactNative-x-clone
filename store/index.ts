@@ -21,7 +21,7 @@ const authPersistConfig = {
 const postPersistConfig = {
   key : 'post',
   storage : AsyncStorage,
-  blacklist : ['isError', 'posts', 'isLoading', 'data', 'fyp', 'users']
+  blacklist : ['isError', 'posts', 'isLoading', 'data', 'fyp', 'users', 'postById']
 }
 
 const userPersistConfig = {

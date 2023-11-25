@@ -10,7 +10,7 @@ import {
 import {AppDispatch, RootState} from '../../store';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
-import {likePost} from '../../store/reducer/post/postSlice';
+import {Post, likePost} from '../../store/reducer/post/postSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {formatDistanceToNowStrict} from 'date-fns';
 import { followUser, getUserData, unfollowUser } from '../../store/reducer/user/userSlice';
@@ -38,14 +38,6 @@ export default function UserProfile({navigation, route}: any) {
     })
   }, [dispatch, getUserData]);  
 
-  interface post {
-    body: string;
-    createdAt: string;
-    id: string;
-    likeIds: string[];
-    userId: string;
-  }
-
   const refreshPage = () => {
     dispatch(
         getUserData({
@@ -56,7 +48,7 @@ export default function UserProfile({navigation, route}: any) {
       );
   }
 
-  const renderItem = ({item}: {item: post}) => (
+  const renderItem = ({item}: {item: Post}) => (
     <View>
       <View className="w-full px-2 py-2 flex-row gap-4">
         <View>
@@ -112,7 +104,7 @@ export default function UserProfile({navigation, route}: any) {
             </View>
             <View className="flex-row items-center">
               <Ionicons name="chatbubble-outline" size={16} color={'black'} />
-              <Text> 0</Text>
+              <Text> {item.comments.length}</Text>
             </View>
           </View>
         </View>

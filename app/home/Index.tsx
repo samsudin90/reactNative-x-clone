@@ -46,6 +46,7 @@ function HomeScreen({navigation}: any) {
     }))
   }
 
+
   const renderItem = ({item}: {item: PostFypDto}) => (
     <View>
       <View className="w-full px-2 py-2 flex-row gap-4">
@@ -68,7 +69,9 @@ function HomeScreen({navigation}: any) {
           )}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {
-          console.log(item.id)
+          navigation.navigate('PostDetail', {
+            postId : item.id
+          })
         }} className="w-10/12">
           <View className="flex-row">
             <Text className="text-slate-900 font-semibold">
@@ -105,7 +108,7 @@ function HomeScreen({navigation}: any) {
             </View>
             <View className="flex-row items-center">
               <Ionicons name="chatbubble-outline" size={16} color={'black'} />
-              <Text> 0</Text>
+              <Text> {item.comments.length}</Text>
             </View>
           </View>
         </TouchableOpacity>

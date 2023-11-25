@@ -4,6 +4,7 @@ import axios, {AxiosError} from 'axios';
 interface PostDto {
   token?: string | null;
   body: string;
+  postId? : string
 }
 
 interface GetPostUserDto {
@@ -12,14 +13,14 @@ interface GetPostUserDto {
   page?: number;
 }
 
-interface Post {
+export interface Post {
   body: string;
   createdAt: string;
   updatedAt: string;
   id: string;
   likeIds: string[];
   userId: string;
-  // comments : []
+  comments : comments[]
 }
 
 export interface UserPostDto {
@@ -53,10 +54,29 @@ export interface PostFypDto {
   likeIds: string[];
   userId: string;
   user: UserDto
+  comments : comments[]
+}
+
+export interface comments {
+  id : string
+  body : string
+  createdAt : string
+  user : UserDto
+}
+
+interface PostById {
+  id : string
+  body : string
+  createdAt : string
+  updatedAt : string
+  likeIds : string[]
+  user : UserDto
+  comments : comments[]
 }
 
 interface PostMainDto {
   data: UserPostDto;
+  postById : PostById
   isError: boolean;
   isLoading: boolean;
   fyp: PostFypDto[];
@@ -78,6 +98,20 @@ const initialState: PostMainDto = {
     followingIds: [],
     followerIds: [],
     posts: [],
+  },
+  postById : {
+    id : '',
+    body : '',
+    createdAt : '',
+    updatedAt : '',
+    likeIds : [],
+    user : {
+      id : '',
+      name : '',
+      username : '',
+      profileImage : null
+    },
+    comments : []
   },
   isError: false,
   isLoading: false,
@@ -232,7 +266,58 @@ export const userSearch = createAsyncThunk(
       const erCode = err.response?.data;
       return erCode;
     }
-  },
+  }, 
+)
+
+export const getPostById = createAsyncThunk(
+  'post/byId',
+  async (data : GetPostUserDto) => {
+    const token = data.token
+    try {
+      const res = await axios.get(
+        `http://192.168.1.15:3000/posts/${data.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      
+      res.data['status'] = res.status
+      return res.data
+    } catch (error) {
+      const err = error as AxiosError;
+      const erCode = err.response?.data;
+      return erCode;
+    }
+  }
+)
+
+export const postComment = createAsyncThunk(
+  'post/comment',
+  async (data : PostDto) => {
+    const token = data.token
+    try {
+      const res = await axios.post(
+        `http://192.168.1.15:3000/comment?postId=${data.postId}`,
+        {
+          "body" : data.body
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      
+      res.data['status'] = res.status
+      return res.data
+    } catch (error) {
+      const err = error as AxiosError;
+      const erCode = err.response?.data;
+      return erCode;
+    }
+  }
   
 )
 
@@ -327,6 +412,27 @@ const postSlice = createSlice({
         }
         if(action.payload.status === 201) {
           state.users = action.payload
+        }
+      })
+      .addCase(getPostById.fulfilled, (state, action) => {
+        state.isError = false
+        if(action.payload.status === 404) {
+          state.isError = false
+          console.log('error')
+        }
+        if(action.payload.status === 200) {
+          state.postById = action.payload
+        }
+      })
+      .addCase(postComment.fulfilled, (state, action) => {
+        state.isError = false
+        if(action.payload.status === 404) {
+          state.isError = false
+          console.log('error')
+        }
+        if(action.payload.status === 201) {
+          // state.postById = action.payload
+          console.log('oke')
         }
       })
   },

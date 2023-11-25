@@ -15,6 +15,7 @@ import EditProfile from './app/profile/EditProfile';
 import AddPost from './app/home/AddPost';
 import SearchScreen from './app/search/Index';
 import UserProfile from './app/profile/UserProfile';
+import PostDetail from './app/home/PostDetail';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator()
@@ -64,6 +65,7 @@ function Auth() {
         <Stack.Screen name='EditProfile' component={EditProfile} />
         <Stack.Screen name='AddPost' component={AddPost} />
         <Stack.Screen name='UserProfile' component={UserProfile} />
+        <Stack.Screen name='PostDetail' component={PostDetail} />
       </Stack.Navigator>
     )
   } else {
